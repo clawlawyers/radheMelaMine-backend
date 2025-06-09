@@ -2,10 +2,18 @@ const express = require("express");
 const axios = require("axios");
 const cors = require("cors");
 const multer = require("multer");
+require("dotenv").config();
+
+// Import database connection and routes
+const connectDB = require("./config/database");
+const authRoutes = require("./routes/auth");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const BASE_URL = "http://74.225.190.5:8000";
+const BASE_URL = process.env.BASE_URL || "http://74.225.190.5:8000";
+
+// Connect to MongoDB
+connectDB();
 
 // Middleware
 app.use(cors());
@@ -63,6 +71,9 @@ async function forwardRequest(req, res, method, endpoint) {
 
 // Routes
 
+// Authentication routes
+app.use("/api/auth", authRoutes);
+
 // GET / - Read Root
 app.get("/", async (req, res) => {
   await forwardRequest(req, res, "GET", "/");
@@ -115,6 +126,11 @@ app.all("*", (req, res) => {
       "POST /update_csv_file",
       "GET /get_order_details",
       "GET /health",
+      "POST /api/auth/signup",
+      "POST /api/auth/login",
+      "GET /api/auth/profile (requires auth)",
+      "PUT /api/auth/profile (requires auth)",
+      "PUT /api/auth/change-password (requires auth)",
     ],
   });
 });
@@ -139,6 +155,18 @@ app.listen(PORT, () => {
   console.log(`   POST http://localhost:${PORT}/update_csv_file`);
   console.log(`   GET  http://localhost:${PORT}/get_order_details`);
   console.log(`   GET  http://localhost:${PORT}/health`);
+  console.log(`\n🔐 Authentication routes:`);
+  console.log(`   POST http://localhost:${PORT}/api/auth/signup`);
+  console.log(`   POST http://localhost:${PORT}/api/auth/login`);
+  console.log(
+    `   GET  http://localhost:${PORT}/api/auth/profile (requires auth)`
+  );
+  console.log(
+    `   PUT  http://localhost:${PORT}/api/auth/profile (requires auth)`
+  );
+  console.log(
+    `   PUT  http://localhost:${PORT}/api/auth/change-password (requires auth)`
+  );
 });
 
 module.exports = app;
