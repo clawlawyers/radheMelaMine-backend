@@ -16,7 +16,7 @@ const BASE_URL = process.env.BASE_URL || "http://74.225.190.5:8000";
 connectDB();
 
 // Middleware
-app.use(cors());
+app.use(cors({ origin: "*" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
