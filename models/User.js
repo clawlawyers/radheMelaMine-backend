@@ -25,11 +25,6 @@ const userSchema = new mongoose.Schema(
       trim: true,
       match: [/^[0-9]{10,15}$/, "Please enter a valid phone number"],
     },
-    role: {
-      type: String,
-      enum: ["user", "admin"],
-      default: "user",
-    },
     isActive: {
       type: Boolean,
       default: true,
